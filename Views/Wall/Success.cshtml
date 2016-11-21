@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASP.NET Registration Page</title>
+    <link rel="stylesheet" href="~/css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" >
+</head> 
+  <body class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-sm-3"><b>CodingDojo Wall</b></div>
+                <div class="col-sm-3">Welcome user, @ViewBag.User_all.first_name</div>
+                <div class="col-sm-3">@ViewBag.display</div>
+                <div class="col-sm-3">
+                    <form action='/logout' method='post'>
+                        <input type="submit" class="btn pull-right" value="Logout">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <form action = '/message' method="POST">
+        <label for="message">Post a Meaasage:</label>
+        <textarea class="form-control" rows="3" id="message" name="message" ></textarea>
+        <input type="hidden" name="user_id" value=@ViewBag.User_all.id>
+        <input type ='submit' class="btn pull-right" value ='post a Message'>
+        </form>
+    </div>
+  </body>
+   <!-- To display Errors -->
+      @{
+            if(ViewBag.errors != null){
+                foreach(var error in ViewBag.errors){
+                    <p class="errors">@error</p>
+                }
+            }
+        } 
+    <!--Displaying Messages-->
+    
+    @{
+        foreach(var Current in ViewBag.messages){
+
+            <p class="messages"><b>@Current.first_name- @Current.created_at</b></p>
+            <p class="messages">@Current.message</p>
+            if(@ViewBag.User_all.id == @Current.user_id)
+            {
+                <form action = '/del_message' method="POST">
+                    <input type="hidden" name="del_message" value=@Current.id>
+                    <input type ='submit' class="btn pull-right" value ='Delete Message'>
+                </form>
+            }
+            <!--To display comments-->
+                foreach(var Current1 in ViewBag.comments){
+                    if( @Current1.message_id == @Current.id)
+                    {
+                        <p class="comments"><b>@Current1.first_name - @Current1.created_at</b></p>
+                        <p class="comments">@Current1.comment</p>
+                    }
+                }
+            <div class="form-group">
+                <form action = '/comment' method="POST">
+                    <label for="comment">Post a Comment:</label>
+                    <textarea class="form-control" rows="3" id="comment" name="comment" ></textarea>
+                    <input type="hidden" name="user_id" value=@ViewBag.User_all.id>
+                    <input type="hidden" name="message_id" value=@Current.id>
+                    <input type ='submit' class="btn pull-right" value ='post a comment'>
+                </form>
+            </div>
+        <hr>
+        }
+    }
+    
+</html>
+
+  
